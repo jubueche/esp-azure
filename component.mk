@@ -1,6 +1,9 @@
 #
 # Component Makefile
-#
+# Manually inserted: httpi_compact.o
+# azure-iot-sdk-c/iothub_client/inc/internal \
+# azure-iot-sdk-c/iothub_client/src/blob.o \
+# azure-iot-sdk-c/iothub_client/src/iothubtransporthttp.o \
  
 # Component configuration in preprocessor defines
 CFLAGS += -DUSE_LWIP_SOCKET_FOR_AZURE_IOT
@@ -8,12 +11,14 @@ CFLAGS += -DUSE_LWIP_SOCKET_FOR_AZURE_IOT
 COMPONENT_ADD_INCLUDEDIRS := \
 port \
 port/inc \
+azure-iot-sdk-c/certs \
 azure-iot-sdk-c/c-utility/inc \
 azure-iot-sdk-c/c-utility/inc/azure_c_shared_utility \
 azure-iot-sdk-c/c-utility/pal/inc \
 azure-iot-sdk-c/c-utility/pal/freertos \
 azure-iot-sdk-c/c-utility/pal/generic \
 azure-iot-sdk-c/iothub_client/inc \
+azure-iot-sdk-c/iothub_client/inc/internal \
 azure-iot-sdk-c/serializer/inc \
 azure-iot-sdk-c/umqtt/inc \
 azure-iot-sdk-c/umqtt/inc/azure_umqtt_c \
@@ -22,11 +27,9 @@ azure-iot-sdk-c/provisioning_client/inc \
 azure-iot-sdk-c/provisioning_client/adapters \
 azure-iot-sdk-c/provisioning_client/deps/utpm/inc \
  
-ifndef CONFIG_TARGET_PLATFORM_ESP8266
-COMPONENT_ADD_INCLUDEDIRS += azure-iot-sdk-c/certs
-endif
  
 COMPONENT_OBJS = \
+azure-iot-sdk-c/certs/certs.o \
 azure-iot-sdk-c/c-utility/pal/freertos/lock.o \
 azure-iot-sdk-c/c-utility/pal/dns_async.o \
 azure-iot-sdk-c/c-utility/pal/socket_async.o \
@@ -67,6 +70,7 @@ azure-iot-sdk-c/c-utility/src/usha.o \
 azure-iot-sdk-c/c-utility/src/vector.o \
 azure-iot-sdk-c/c-utility/src/xio.o \
 azure-iot-sdk-c/c-utility/src/base64.o \
+azure-iot-sdk-c/c-utility/adapters/httpapi_compact.o \
 \
 \
 azure-iot-sdk-c/iothub_client/src/iothub_device_client_ll.o \
@@ -82,6 +86,8 @@ azure-iot-sdk-c/iothub_client/src/iothubtransportmqtt.o \
 azure-iot-sdk-c/iothub_client/src/iothubtransport_mqtt_common.o \
 azure-iot-sdk-c/iothub_client/src/iothub_transport_ll_private.o \
 azure-iot-sdk-c/iothub_client/src/version.o \
+azure-iot-sdk-c/iothub_client/src/blob.o \
+azure-iot-sdk-c/iothub_client/src/iothubtransporthttp.o \
 \
 \
 azure-iot-sdk-c/umqtt/src/mqtt_client.o \
@@ -128,17 +134,10 @@ azure-iot-sdk-c/c-utility/src/base32.o \
 ifdef CONFIG_DEVICE_COMMON_NAME
 COMPONENT_OBJS += azure-iot-sdk-c/provisioning_client/src/iothub_auth_client.o
 endif
-
-ifdef CONFIG_TARGET_PLATFORM_ESP8266
-COMPONENT_OBJS += port/src/certs.o
-endif
-
-ifndef CONFIG_TARGET_PLATFORM_ESP8266
-COMPONENT_OBJS += azure-iot-sdk-c/certs/certs.o
-endif
-
+ 
 COMPONENT_SRCDIRS := \
 port/src \
+azure-iot-sdk-c/certs \
 azure-iot-sdk-c/c-utility/pal \
 azure-iot-sdk-c/c-utility/pal/freertos \
 azure-iot-sdk-c/c-utility/pal/lwip \
@@ -154,10 +153,6 @@ azure-iot-sdk-c/iothub_client_amqp_transport \
 azure-iot-sdk-c/provisioning_client/src \
 azure-iot-sdk-c/provisioning_client/adapters \
 azure-iot-sdk-c/provisioning_client/deps/utpm/src \
-
-ifndef CONFIG_TARGET_PLATFORM_ESP8266
-COMPONENT_SRCDIRS += azure-iot-sdk-c/certs
-endif
 
 CFLAGS += -Wno-unused-function -Wno-missing-braces -Wno-missing-field-initializers -DHSM_TYPE_X509 -DHSM_TYPE_SAS_TOKEN
 
